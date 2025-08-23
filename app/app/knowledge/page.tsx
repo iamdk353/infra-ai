@@ -2,24 +2,47 @@
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { FilePlusIcon, Loader2Icon } from "lucide-react";
+import { File, FilePlusIcon, Loader2Icon } from "lucide-react";
 import { useScroll } from "motion/react";
 import * as React from "react";
 import { toast } from "sonner";
+import axios from "axios";
+import { cn } from "@/lib/utils";
 const page = () => {
-  const tags = Array.from({ length: 50 }).map(
-    (_, i, a) => `v1.2.0-beta.${a.length - i}`
-  );
   const [loadData, setLoadData] = React.useState("");
   const [fileName, setFileName] = React.useState("");
   const [uploadProgress, setUploadProgress] = React.useState(false);
   const [uploading, setUploading] = React.useState(false);
+  const [uploads, setUploads] = React.useState([{ fileName: "", _id: "" }]);
+  const [isContentLoading, setIscontentLoading] = React.useState(false);
+  React.useEffect(() => {
+    const fetchFiles = async () => {
+      try {
+        const res = await fetch(
+          "/api/knowledge?token=" + localStorage.getItem("token"),
+          { method: "GET" }
+        );
+        const data = await res.json();
+
+        if (res.ok) {
+          // assuming API returns { files: [ { fileName: "abc.txt" }, ... ] }
+          setUploads(data.files);
+        } else {
+          console.error("Error:", data.error);
+        }
+      } catch (err) {
+        console.error("Fetch failed:", err);
+      }
+    };
+    console.log(uploads);
+    fetchFiles();
+  }, [uploadProgress]);
   return (
     <div className="flex ">
       <ScrollArea className="h-[80vh] w-48 rounded-md border ">
         <div className="p-4">
           <h4 className="mb-4 text-sm leading-none font-medium">
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="items-center gap-2 cursor-pointer  inline-block">
               <FilePlusIcon className="size-4" />
               <input
                 type="file"
@@ -41,11 +64,31 @@ const page = () => {
               />
             </label>
           </h4>
-          {tags.map((tag) => (
-            <React.Fragment key={tag}>
-              <div className="text-sm">{tag}</div>
+          {uploads.map(({ fileName, _id }) => (
+            <div key={_id}>
+              <Button
+                className="text-[0.8rem] w-full flex justify-start"
+                variant="ghost"
+                onClick={async () => {
+                  try {
+                    setIscontentLoading(true);
+                    const res = await axios.get(`/api/knowledge/${_id}`);
+                    const file = res.data.file;
+                    console.log("Fetched file:", file);
+                    setLoadData(file.content);
+                    setIscontentLoading(false);
+                  } catch (err) {
+                    console.error("Error fetching file:", err);
+                    alert("Failed to fetch file");
+                    setIscontentLoading(false);
+                  }
+                }}
+              >
+                <File className="size-4" />
+                {fileName}
+              </Button>
               <Separator className="my-2" />
-            </React.Fragment>
+            </div>
           ))}
         </div>
       </ScrollArea>
@@ -72,12 +115,12 @@ const page = () => {
                   if (res.ok) {
                     toast.success("uploaded successfully");
                     setUploading(false);
-                    setLoadData("");
+                    // setLoadData("");
                     setUploadProgress(false);
                   } else {
                     toast.error("uploading faliled");
                     setUploading(false);
-                    setLoadData("");
+                    // setLoadData("");
                     setUploadProgress(false);
                   }
                 } catch (err) {
@@ -97,7 +140,12 @@ const page = () => {
             </Button>
           </div>
         )}
-        <pre className="bg-primary-foreground text-wrap p-7 leading-7 text-justify selection:bg-secondary mt-2">
+        <pre
+          className={cn(
+            "bg-primary-foreground text-wrap p-7 leading-7 text-justify selection:bg-secondary mt-2",
+            isContentLoading && "animate-pulse"
+          )}
+        >
           {loadData}
         </pre>
       </ScrollArea>

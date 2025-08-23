@@ -54,7 +54,7 @@ export async function GET(req: Request) {
     // fetch only fileName where creator matches
     const files = await TextFile.find({ creator: email })
       .sort({ createdAt: -1 })
-      .select("fileName -_id");
+      .select("fileName _id");
 
     return NextResponse.json({ files }, { status: 200 });
   } catch (err) {
