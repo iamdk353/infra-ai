@@ -14,6 +14,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -21,6 +23,8 @@ const formSchema = z.object({
 });
 
 const Login = () => {
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       email: "",
@@ -29,8 +33,29 @@ const Login = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log("Login data:", data);
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    try {
+      const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data, action: "login" }),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        toast.error(result.error || "Login failed");
+        return;
+      }
+
+      // Store token
+      localStorage.setItem("token", result.token);
+
+      toast.success("Login successful!");
+      router.push("/app"); // redirect to app/dashboard
+    } catch (err: any) {
+      toast.error("Something went wrong");
+    }
   };
 
   return (

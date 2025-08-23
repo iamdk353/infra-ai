@@ -10,18 +10,23 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
+import { useState } from "react";
+import { LucideLoaderCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 const formSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8, "Password must be at least 8 characters long"),
 });
 
 export const SignUp = () => {
+  const [load, setLoad] = useState(false);
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       email: "",
@@ -30,8 +35,32 @@ export const SignUp = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    try {
+      setLoad(true);
+      const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...data, action: "signup" }),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        setLoad(false);
+        toast.error(result.error || "Signup failed");
+        return;
+      }
+
+      toast.success("Signup successful!");
+      console.log("Token:", result.token);
+      localStorage.setItem("token", result.token);
+      setLoad(false);
+      router.push("/app");
+    } catch (err: any) {
+      toast.error("Something went wrong");
+      setLoad(false);
+    }
   };
 
   return (
@@ -82,8 +111,16 @@ export const SignUp = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="mt-4 w-full">
-              Continue with Email
+            <Button
+              type="submit"
+              className="mt-4 w-full flex text-center"
+              disabled={load}
+            >
+              {load ? (
+                <LucideLoaderCircle className="animate-spin" />
+              ) : (
+                "Continue with Email"
+              )}
             </Button>
           </form>
         </Form>
