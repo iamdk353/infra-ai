@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { connectDB } from "@/lib/mongodb";
 import { TextFile } from "@/models/Knowledge";
+import { getEmailFromToken } from "@/lib/jwtParser";
 
 export async function POST(req: Request) {
   try {
@@ -11,6 +12,7 @@ export async function POST(req: Request) {
     if (!fileName || !content || !creator) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
+    const email = getEmailFromToken(creator);
 
     // optional JWT validation
     if (token) {
@@ -21,7 +23,11 @@ export async function POST(req: Request) {
       }
     }
 
-    const newFile = await TextFile.create({ fileName, content, creator });
+    const newFile = await TextFile.create({
+      fileName,
+      content,
+      creator: email,
+    });
     return NextResponse.json(
       { message: "File saved", file: newFile },
       { status: 201 }
@@ -38,11 +44,12 @@ export async function GET(req: Request) {
 
     // get email from query param
     const { searchParams } = new URL(req.url);
-    const email = searchParams.get("email");
+    const token = searchParams.get("token");
 
-    if (!email) {
-      return NextResponse.json({ error: "Email required" }, { status: 400 });
+    if (!token) {
+      return NextResponse.json({ error: "Token required" }, { status: 400 });
     }
+    const email = getEmailFromToken(token);
 
     // fetch only fileName where creator matches
     const files = await TextFile.find({ creator: email })

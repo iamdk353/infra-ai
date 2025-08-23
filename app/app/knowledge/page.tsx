@@ -2,8 +2,10 @@
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { FilePlusIcon } from "lucide-react";
+import { FilePlusIcon, Loader2Icon } from "lucide-react";
+import { useScroll } from "motion/react";
 import * as React from "react";
+import { toast } from "sonner";
 const page = () => {
   const tags = Array.from({ length: 50 }).map(
     (_, i, a) => `v1.2.0-beta.${a.length - i}`
@@ -11,6 +13,7 @@ const page = () => {
   const [loadData, setLoadData] = React.useState("");
   const [fileName, setFileName] = React.useState("");
   const [uploadProgress, setUploadProgress] = React.useState(false);
+  const [uploading, setUploading] = React.useState(false);
   return (
     <div className="flex ">
       <ScrollArea className="h-[80vh] w-48 rounded-md border ">
@@ -49,9 +52,48 @@ const page = () => {
       <ScrollArea className="w-full h-[80vh] rounded-md border">
         {uploadProgress && (
           <div className="sticky top-0 bg-primary-foreground z-10 flex justify-end p-2">
-            <Button onClick={() => alert("uploaded   " + fileName)}>
-              <FilePlusIcon />
-              Upload
+            <Button
+              disabled={uploading}
+              onClick={async () => {
+                setUploading(true);
+                try {
+                  const token = localStorage.getItem("token");
+                  const res = await fetch("/api/knowledge", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      fileName,
+                      content: loadData,
+                      creator: token,
+                    }),
+                  });
+
+                  const data = await res.json();
+                  if (res.ok) {
+                    toast.success("uploaded successfully");
+                    setUploading(false);
+                    setLoadData("");
+                    setUploadProgress(false);
+                  } else {
+                    toast.error("uploading faliled");
+                    setUploading(false);
+                    setLoadData("");
+                    setUploadProgress(false);
+                  }
+                } catch (err) {
+                  console.error(err);
+                  alert("Upload failed");
+                }
+              }}
+            >
+              {uploading ? (
+                <Loader2Icon className="animate-spin" />
+              ) : (
+                <>
+                  <FilePlusIcon />
+                  Upload
+                </>
+              )}
             </Button>
           </div>
         )}
