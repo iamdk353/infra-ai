@@ -1,0 +1,34 @@
+import { NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
+import { connectDB } from "@/lib/mongodb"; // your MongoDB connection
+import { User } from "@/models/User"; // your User model
+
+export async function GET(req: Request) {
+  try {
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return NextResponse.json({ error: "No token provided" }, { status: 401 });
+    }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+
+    // @ts-ignore
+    const userId = decoded.id;
+
+    await connectDB();
+    const user = await User.findById(userId).select(
+      "-password -__v -createdAt  -updatedAt"
+    );
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ user });
+  } catch (err: any) {
+    return NextResponse.json(
+      { error: "Invalid or expired token" },
+      { status: 401 }
+    );
+  }
+}
