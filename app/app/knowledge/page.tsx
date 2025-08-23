@@ -26,9 +26,9 @@ const page = () => {
                 accept=".txt"
                 className="hidden"
                 onChange={(e) => {
+                  setUploadProgress(true);
                   const file = e.target.files?.[0];
                   if (file) {
-                    setUploadProgress(true);
                     setFileName(file.name);
                     const reader = new FileReader();
                     reader.onload = (event) => {
