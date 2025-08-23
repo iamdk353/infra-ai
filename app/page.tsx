@@ -7,11 +7,9 @@ import Navbar05Page from "@/components/navbar-05/navbar-05";
 const page = () => {
   return (
     <div className="flex flex-col">
-      <Navbar05Page />
       <Hero03 />
       <Features06Page />
       <FAQ02 />
-      <Footer05Page />
     </div>
   );
 };

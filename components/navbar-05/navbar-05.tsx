@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Logo } from "./logo";
 import { Search } from "lucide-react";
+import Link from "next/link";
 
 const Navbar05Page = () => {
   return (
@@ -20,13 +21,14 @@ const Navbar05Page = () => {
             >
               <Search className="!h-5 !w-5" />
             </Button>
-            <Button
-              variant="outline"
-              className="hidden sm:inline-flex rounded-full"
-            >
-              Sign In
-            </Button>
-            <Button className="rounded-full">Get Started</Button>
+            <Link href={"/signup"}>
+              <Button
+                variant="outline"
+                className="hidden sm:inline-flex rounded-full"
+              >
+                Sign Up
+              </Button>
+            </Link>
           </div>
         </div>
       </nav>
