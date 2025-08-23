@@ -41,11 +41,11 @@ const data = {
       url: "/app/ai-chat",
       icon: IconBrain,
     },
-    {
-      title: "Financial Analyser",
-      url: "/app/financial-analyser",
-      icon: IconReportMoney,
-    },
+    // {
+    //   title: "Financial Analyser",
+    //   url: "/app/financial-analyser",
+    //   icon: IconReportMoney,
+    // },
     {
       title: "Knowledge",
       url: "/app/knowledge",
