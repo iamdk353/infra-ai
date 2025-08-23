@@ -8,6 +8,15 @@ import * as React from "react";
 import { toast } from "sonner";
 import axios from "axios";
 import { cn } from "@/lib/utils";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 const page = () => {
   const [loadData, setLoadData] = React.useState("");
   const [fileName, setFileName] = React.useState("");
@@ -180,7 +189,6 @@ interface CsvTableProps {
 const CsvTable: React.FC<CsvTableProps> = ({ data }) => {
   if (!data) return null;
 
-  // Split into rows and cells
   const rows = data
     .trim()
     .split("\n")
@@ -188,31 +196,25 @@ const CsvTable: React.FC<CsvTableProps> = ({ data }) => {
 
   return (
     <div className="overflow-x-auto mt-2">
-      <table className="w-full border border-gray-300 border-collapse text-sm">
-        <thead>
-          <tr className="bg-gray-100">
+      <Table>
+        <TableCaption>CSV Data</TableCaption>
+        <TableHeader>
+          <TableRow>
             {rows[0].map((cell, i) => (
-              <th
-                key={i}
-                className="border border-gray-300 px-3 py-2 text-left"
-              >
-                {cell}
-              </th>
+              <TableHead key={i}>{cell}</TableHead>
             ))}
-          </tr>
-        </thead>
-        <tbody>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {rows.slice(1).map((row, rIndex) => (
-            <tr key={rIndex}>
+            <TableRow key={rIndex}>
               {row.map((cell, cIndex) => (
-                <td key={cIndex} className="border border-gray-300 px-3 py-2">
-                  {cell}
-                </td>
+                <TableCell key={cIndex}>{cell}</TableCell>
               ))}
-            </tr>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
 };
