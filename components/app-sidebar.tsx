@@ -33,37 +33,37 @@ const data = {
   navMain: [
     {
       title: "Home",
-      url: "#",
+      url: "/app",
       icon: IconHome,
     },
     {
       title: "Ai-chat",
-      url: "#",
+      url: "/app/ai-chat",
       icon: IconBrain,
     },
     {
       title: "Financial Analyser",
-      url: "#",
+      url: "/app/financial-analyser",
       icon: IconReportMoney,
     },
     {
       title: "Knowledge",
-      url: "#",
+      url: "/app/knowledge",
       icon: IconBooks,
     },
     {
       title: "Analysis",
-      url: "#",
+      url: "/app/analysis",
       icon: IconGraph,
     },
     {
       title: "Reports",
-      url: "#",
+      url: "/app/reports",
       icon: IconReportAnalytics,
     },
     {
       title: "Cards",
-      url: "#",
+      url: "/app/cards",
       icon: IconGridDots,
     },
   ],
