@@ -15,6 +15,7 @@ const page = () => {
   const [uploading, setUploading] = React.useState(false);
   const [uploads, setUploads] = React.useState([{ fileName: "", _id: "" }]);
   const [isContentLoading, setIscontentLoading] = React.useState(false);
+  const [iscsv, setIsCsv] = React.useState(false);
   React.useEffect(() => {
     const fetchFiles = async () => {
       try {
@@ -37,6 +38,9 @@ const page = () => {
     console.log(uploads);
     fetchFiles();
   }, [uploadProgress]);
+  React.useEffect(() => {
+    console.log(iscsv);
+  });
   return (
     <div className="flex ">
       <ScrollArea className="h-[80vh] w-48 rounded-md border ">
@@ -53,10 +57,16 @@ const page = () => {
                   const file = e.target.files?.[0];
                   if (file) {
                     setFileName(file.name);
+
                     const reader = new FileReader();
                     reader.onload = (event) => {
                       const text = event.target?.result;
                       setLoadData(text as string);
+                      if (file.name.toLowerCase().endsWith(".csv")) {
+                        setIsCsv(file.name.toLowerCase().endsWith(".csv"));
+                      } else {
+                        setIsCsv(false);
+                      }
                     };
                     reader.readAsText(file);
                   }
@@ -75,6 +85,11 @@ const page = () => {
                     const res = await axios.get(`/api/knowledge/${_id}`);
                     const file = res.data.file;
                     console.log("Fetched file:", file);
+                    if (file.fileName.endsWith(".csv")) {
+                      setIsCsv(true);
+                    } else {
+                      setIsCsv(false);
+                    }
                     setLoadData(file.content);
                     setIscontentLoading(false);
                   } catch (err) {
@@ -140,16 +155,64 @@ const page = () => {
             </Button>
           </div>
         )}
-        <pre
-          className={cn(
-            "bg-primary-foreground text-wrap p-7 leading-7 text-justify selection:bg-secondary mt-2",
-            isContentLoading && "animate-pulse"
-          )}
-        >
-          {loadData}
-        </pre>
+        {iscsv ? (
+          <CsvTable data={loadData} /> // custom CSV table component
+        ) : (
+          <pre
+            className={cn(
+              "bg-primary-foreground text-wrap p-7 leading-7 text-justify selection:bg-secondary mt-2",
+              isContentLoading && "animate-pulse"
+            )}
+          >
+            {loadData}
+          </pre>
+        )}
       </ScrollArea>
     </div>
   );
 };
 export default page;
+
+interface CsvTableProps {
+  data: string; // raw CSV string
+}
+
+const CsvTable: React.FC<CsvTableProps> = ({ data }) => {
+  if (!data) return null;
+
+  // Split into rows and cells
+  const rows = data
+    .trim()
+    .split("\n")
+    .map((row) => row.split(","));
+
+  return (
+    <div className="overflow-x-auto mt-2">
+      <table className="w-full border border-gray-300 border-collapse text-sm">
+        <thead>
+          <tr className="bg-gray-100">
+            {rows[0].map((cell, i) => (
+              <th
+                key={i}
+                className="border border-gray-300 px-3 py-2 text-left"
+              >
+                {cell}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.slice(1).map((row, rIndex) => (
+            <tr key={rIndex}>
+              {row.map((cell, cIndex) => (
+                <td key={cIndex} className="border border-gray-300 px-3 py-2">
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
