@@ -79,7 +79,14 @@ const page = () => {
             </label>
           </h4>
 
-          <h5 className="font-medium text-xs my-2">CSV Files</h5>
+          <h5 className="font-medium text-xs my-2">
+            CSV Files (
+            {
+              uploads.filter((u) => u.fileName.toLowerCase().endsWith(".csv"))
+                .length
+            }
+            )
+          </h5>
           {uploads
             .filter((u) => u.fileName.toLowerCase().endsWith(".csv"))
             .map(({ fileName, _id }) => (
@@ -109,7 +116,14 @@ const page = () => {
               </div>
             ))}
 
-          <h5 className="font-medium text-xs my-2">TXT Files</h5>
+          <h5 className="font-medium text-xs my-2">
+            TXT Files (
+            {
+              uploads.filter((u) => u.fileName.toLowerCase().endsWith(".txt"))
+                .length
+            }
+            )
+          </h5>
           {uploads
             .filter((u) => u.fileName.toLowerCase().endsWith(".txt"))
             .map(({ fileName, _id }) => (
