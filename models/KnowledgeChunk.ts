@@ -6,6 +6,7 @@ const ChunkSchema = new Schema(
     content: { type: String, required: true },
     chunkIndex: { type: Number, required: true },
     embedding: { type: [Number], required: true },
+    creator: { type: String, required: true },
   },
   { timestamps: true }
 );

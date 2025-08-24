@@ -5,7 +5,8 @@ import { TextFile } from "@/models/Knowledge";
 import { getEmailFromToken } from "@/lib/jwtParser";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { pipeline } from "@xenova/transformers";
-import { Chunk } from "@/models/knowledgeChunk";
+import { Chunk } from "@/models/KnowledgeChunk";
+import { cleanText } from "@/lib/textClean";
 
 export async function POST(req: Request) {
   try {
@@ -33,7 +34,9 @@ export async function POST(req: Request) {
     });
 
     logBackground("INIT", "starting background worker...");
-    process.nextTick(() => processEmbeddings(newFile._id, content));
+    process.nextTick(() =>
+      processEmbeddings(newFile._id, content, newFile.creator)
+    );
     return NextResponse.json(
       { message: "File saved", file: newFile },
       { status: 201 }
@@ -82,7 +85,11 @@ function logBackground(process: string, message: string) {
   console.log(`${brightYellow}${line}${reset}`);
 }
 
-async function processEmbeddings(fileId: string, text: string) {
+async function processEmbeddings(
+  fileId: string,
+  text: string,
+  creator: string
+) {
   try {
     logBackground("init", `Starting embedding process for file ${fileId}`);
 
@@ -104,7 +111,7 @@ async function processEmbeddings(fileId: string, text: string) {
 
     for (let i = 0; i < chunks.length; i++) {
       logBackground("chunk", `Processing chunk ${i + 1}/${chunks.length}`);
-      const vec = await embedder(chunks[i], {
+      const vec = await embedder(cleanText(chunks[i]), {
         pooling: "mean",
         normalize: true,
       });
@@ -113,7 +120,8 @@ async function processEmbeddings(fileId: string, text: string) {
       await Chunk.create({
         fileId,
         chunkIndex: i,
-        content: chunks[i],
+        content: cleanText(chunks[i]),
+        creator,
         embedding,
       });
       logBackground("db", `Saved chunk ${i + 1} to database`);
