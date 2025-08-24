@@ -1,34 +1,59 @@
 import { NextResponse } from "next/server";
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { connectDB } from "@/lib/mongodb";
+import { User } from "@/models/User";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY as string;
+const JWT_SECRET = process.env.JWT_SECRET as string;
 
-if (!GOOGLE_API_KEY) throw new Error("Please add GOOGLE_API_KEY to .env");
+if (!JWT_SECRET) throw new Error("Please add JWT_SECRET to .env");
 
 export async function POST(req: Request) {
   try {
-    const { prompt, action } = await req.json(); // action = "generate" | custom actions
+    const { email, password, action } = await req.json(); // action = "signup" | "login"
 
-    const model = new ChatGoogleGenerativeAI({
-      model: "gemini-pro",
-      maxOutputTokens: 2048,
-      apiKey: GOOGLE_API_KEY,
-    });
+    await connectDB();
 
-    if (action === "generate" || !action) {
-      const result = await model.invoke([
-        [
-          "human",
-          prompt ||
-            "What would be a good company name for a company that makes colorful socks?",
-        ],
-      ]);
+    if (action === "signup") {
+      // check existing
+      const existing = await User.findOne({ email });
+      if (existing) {
+        return NextResponse.json(
+          { error: "User already exists" },
+          { status: 400 }
+        );
+      }
 
-      return NextResponse.json({
-        message: "Generation success",
-        content: result.content,
-        timestamp: new Date().toISOString(),
+      const hashed = await bcrypt.hash(password, 10);
+      const user = await User.create({ email, password: hashed });
+
+      const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
+        expiresIn: "1d",
       });
+
+      return NextResponse.json({ message: "Signup success", token });
+    }
+
+    if (action === "login") {
+      const user = await User.findOne({ email });
+      if (!user)
+        return NextResponse.json(
+          { error: "Invalid credentials" },
+          { status: 400 }
+        );
+
+      const valid = await bcrypt.compare(password, user.password);
+      if (!valid)
+        return NextResponse.json(
+          { error: "Invalid credentials" },
+          { status: 400 }
+        );
+
+      const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
+        expiresIn: "1d",
+      });
+
+      return NextResponse.json({ message: "Login success", token });
     }
 
     return NextResponse.json({ error: "Invalid action" }, { status: 400 });
