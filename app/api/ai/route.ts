@@ -7,7 +7,7 @@ if (!GOOGLE_API_KEY) throw new Error("Please add GOOGLE_API_KEY to .env");
 
 export async function POST(req: Request) {
   try {
-    const { prompt, action } = await req.json();
+    const { prompt } = await req.json();
 
     const model = new ChatGoogleGenerativeAI({
       model: "gemini-2.0-flash",
