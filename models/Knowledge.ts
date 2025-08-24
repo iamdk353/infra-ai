@@ -5,6 +5,7 @@ const Knowledge = new mongoose.Schema(
     fileName: { type: String, required: true },
     content: { type: String, required: true },
     creator: { type: String, required: true },
+    vectorise: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
