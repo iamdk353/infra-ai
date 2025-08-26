@@ -182,3 +182,8 @@
 #nprogress .peg {
   box-shadow: 0 0 10px oklch(0.7049 0.1867 47.6044), 0 0 5px oklch(0.7049 0.1867 47.6044);
 }
+
+*::selection {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}

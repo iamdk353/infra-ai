@@ -16,28 +16,27 @@ export async function POST(req: Request) {
     });
 
     const AiPrompt = `
-You are an AI assistant.
-
-Retrieved Context:
-${text}  
-
-User Input:
-${prompt}  
-
-Rules:
-1. If the input is a **question**, answer using ONLY the retrieved context.  
-   - Be clear, concise, and factual.  
-   - Provide a helpful explanation in 2–4 sentences instead of just a short reply.  
-   - If the context does not contain the answer, reply exactly:  
-     "The retrieved documents do not contain information to answer this question." 
-     
-
-
-2. If the input is **not a question** (casual/friendly chat), respond naturally and conversationally.  
-   - Do not force context usage.  
-   - Keep replies friendly, human-like, and engaging.  
-
-3. Never hallucinate, guess, or invent details outside the context.  
+      Rules for Responses
+      If the input is a question
+      Answer only from the retrieved context 
+      (${text}).
+      Keep it clear, concise, and factual (2–4 sentences).
+      If the context lacks the answer, reply with a variation of:
+      "I couldn’t find the answer to that in the retrieved documents."
+      "The provided context doesn’t include information to address your question."
+      "There’s no relevant detail in the given documents to answer this."
+      "The retrieved data doesn’t cover this query."
+      Always rotate phrasing to avoid repetition.
+      If the input is not a question (casual/friendly chat)
+      Ignore context.
+      Respond naturally, like a human conversation.
+      Keep tone friendly, engaging, and relatable.
+      Malformed questions
+      If the input isn’t a properly formed question (unclear, incomplete, or ambiguous), call it out politely.
+      Example: "Your question seems incomplete—could you rephrase it?
+      -- 
+      answer the question : ${prompt}
+      "
 
     `;
     const result = await model.invoke([["human", AiPrompt]]);

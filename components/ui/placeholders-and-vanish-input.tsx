@@ -6,9 +6,11 @@ const ChatInput = ({
   onSubmit,
   input,
   onChange,
+  thinking,
 }: {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   input: string;
+  thinking: boolean;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }) => {
   return (
@@ -45,7 +47,7 @@ const ChatInput = ({
       <Button
         type="submit"
         className="rounded-full cursor-pointer shadow-xs disabled:rounded-md group absolute right-3 bottom-1 transition-all duration-200 ease-in-out"
-        disabled={input.length === 0}
+        disabled={input.length === 0 || thinking}
       >
         <ArrowBigUpDashIcon className="size-[14px] group-hover:translate-y-[-1px] transition-all" />
       </Button>
