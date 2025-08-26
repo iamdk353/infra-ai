@@ -7,7 +7,7 @@ import {
   ConversationScrollButton,
 } from "@/components/ui/shadcn-io/ai/conversation";
 import { Message, MessageContent } from "@/components/ui/shadcn-io/ai/message";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
 import { useEffect, useState } from "react";
 const page = () => {
@@ -16,6 +16,17 @@ const page = () => {
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
   };
+  interface SearchRequest {
+    query: string;
+    token: string;
+  }
+
+  interface SearchResponse {
+    success: boolean;
+    query: string;
+    results: string;
+  }
+
   async function RetriveKnowledge(info: string) {
     const { data } = await axios.post<SearchResponse>(
       "/api/knowledge/retrive",
@@ -76,13 +87,34 @@ const Chat = ({ data }: { data: messageProps[] }) => {
   );
 };
 
-interface SearchRequest {
-  query: string;
-  token: string;
+interface GenerateRequest {
+  prompt: string;
 }
 
-interface SearchResponse {
-  success: boolean;
-  query: string;
-  results: string;
+interface GenerateResponse {
+  message: string;
+  content: string;
+  timestamp: string;
 }
+
+const generateContent = async (prompt: string): Promise<GenerateResponse> => {
+  try {
+    const response: AxiosResponse<GenerateResponse> = await axios.post(
+      "/api/generate",
+      {
+        prompt,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      `Generation failed: ${error.response?.data?.error || error.message}`
+    );
+  }
+};

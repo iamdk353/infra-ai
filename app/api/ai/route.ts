@@ -15,13 +15,10 @@ export async function POST(req: Request) {
       apiKey: GOOGLE_API_KEY,
     });
 
-    const result = await model.invoke([
-      [
-        "human",
-        prompt ||
-          "What would be a good company name for a company that makes colorful socks?",
-      ],
-    ]);
+    const AiPrompt = `
+    you are an ai assistant use this phrase ${prompt} to answer 
+    `;
+    const result = await model.invoke([["human", prompt]]);
 
     return NextResponse.json({
       message: "Generation success",
