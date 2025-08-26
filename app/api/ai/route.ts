@@ -7,7 +7,7 @@ if (!GOOGLE_API_KEY) throw new Error("Please add GOOGLE_API_KEY to .env");
 
 export async function POST(req: Request) {
   try {
-    const { prompt } = await req.json();
+    const { prompt, text } = await req.json();
 
     const model = new ChatGoogleGenerativeAI({
       model: "gemini-2.0-flash",
@@ -16,9 +16,31 @@ export async function POST(req: Request) {
     });
 
     const AiPrompt = `
-    you are an ai assistant use this phrase ${prompt} to answer 
+You are an AI assistant.
+
+Retrieved Context:
+${text}  
+
+User Input:
+${prompt}  
+
+Rules:
+1. If the input is a **question**, answer using ONLY the retrieved context.  
+   - Be clear, concise, and factual.  
+   - Provide a helpful explanation in 2–4 sentences instead of just a short reply.  
+   - If the context does not contain the answer, reply exactly:  
+     "The retrieved documents do not contain information to answer this question." 
+     
+
+
+2. If the input is **not a question** (casual/friendly chat), respond naturally and conversationally.  
+   - Do not force context usage.  
+   - Keep replies friendly, human-like, and engaging.  
+
+3. Never hallucinate, guess, or invent details outside the context.  
+
     `;
-    const result = await model.invoke([["human", prompt]]);
+    const result = await model.invoke([["human", AiPrompt]]);
 
     return NextResponse.json({
       message: "Generation success",

@@ -20,6 +20,15 @@ const page = () => {
     query: string;
     token: string;
   }
+  interface GenerateRequest {
+    prompt: string;
+  }
+
+  interface GenerateResponse {
+    message: string;
+    content: string;
+    timestamp: string;
+  }
 
   interface SearchResponse {
     success: boolean;
@@ -35,12 +44,44 @@ const page = () => {
         token: localStorage.getItem("token"),
       }
     );
+
     console.log(data);
-    setMessages((prev) => [
-      ...(prev || []),
-      { from: "system", message: data.results },
-    ]);
+    if (data) {
+      console.log("invoking llm");
+      await generateContent(info, data.results);
+    }
   }
+  const generateContent = async (
+    prompt: string,
+    text: string
+  ): Promise<GenerateResponse> => {
+    // ) => {
+    try {
+      const response: AxiosResponse<GenerateResponse> = await axios.post(
+        "/api/ai",
+        {
+          prompt,
+          text,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      setMessages((prev) => [
+        ...(prev || []),
+        { from: "system", message: response.data.content },
+      ]);
+      // console.log(" ai resp ", response.data);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        `Generation failed: ${error.response?.data?.error || error.message}`
+      );
+    }
+  };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -85,36 +126,4 @@ const Chat = ({ data }: { data: messageProps[] }) => {
       ))}
     </>
   );
-};
-
-interface GenerateRequest {
-  prompt: string;
-}
-
-interface GenerateResponse {
-  message: string;
-  content: string;
-  timestamp: string;
-}
-
-const generateContent = async (prompt: string): Promise<GenerateResponse> => {
-  try {
-    const response: AxiosResponse<GenerateResponse> = await axios.post(
-      "/api/generate",
-      {
-        prompt,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    return response.data;
-  } catch (error: any) {
-    throw new Error(
-      `Generation failed: ${error.response?.data?.error || error.message}`
-    );
-  }
 };
