@@ -1,7 +1,7 @@
 import { Textarea } from "./textarea";
 import { Button } from "./button";
-import { ArrowBigUpDashIcon } from "lucide-react";
-
+import { ArrowBigUpDashIcon, Box, PackageOpen } from "lucide-react";
+import { SelectAi } from "../SelectAi";
 const ChatInput = ({
   onSubmit,
   input,
@@ -43,7 +43,9 @@ const ChatInput = ({
           onChange={onChange}
         />
       </div>
-
+      <div className="flex space-x-2.5">
+        <SelectAi />
+      </div>
       <Button
         type="submit"
         className="rounded-full cursor-pointer shadow-xs disabled:rounded-md group absolute right-3 bottom-1 transition-all duration-200 ease-in-out"

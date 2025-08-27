@@ -9,6 +9,7 @@ import { Message, MessageContent } from "@/components/ui/shadcn-io/ai/message";
 import axios, { AxiosResponse } from "axios";
 import { useState } from "react";
 import React from "react";
+
 import Loader from "@/components/Loader";
 
 const Page = () => {
