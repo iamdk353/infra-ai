@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { File, FilePlusIcon, Loader2Icon } from "lucide-react";
+import { File, FilePlusIcon, Loader2, Loader2Icon } from "lucide-react";
 import { useScroll } from "motion/react";
 import * as React from "react";
 import { toast } from "sonner";
@@ -21,6 +21,7 @@ const page = () => {
   const [loadData, setLoadData] = React.useState("");
   const [fileName, setFileName] = React.useState("");
   const [uploadProgress, setUploadProgress] = React.useState(false);
+  const [isFilesLoading, setIsfilesLoading] = React.useState(true);
   const [uploading, setUploading] = React.useState(false);
   const [uploads, setUploads] = React.useState([{ fileName: "", _id: "" }]);
   const [isContentLoading, setIscontentLoading] = React.useState(false);
@@ -36,11 +37,14 @@ const page = () => {
 
         if (res.ok) {
           // assuming API returns { files: [ { fileName: "abc.txt" }, ... ] }
+          setIsfilesLoading(false);
           setUploads(data.files);
         } else {
+          setIsfilesLoading(false);
           console.error("Error:", data.error);
         }
       } catch (err) {
+        setIsfilesLoading(false);
         console.error("Fetch failed:", err);
       }
     };
@@ -59,7 +63,7 @@ const page = () => {
               <FilePlusIcon className="size-4" />
               <input
                 type="file"
-                accept=".txt,.csv"
+                accept=".txt"
                 className="hidden"
                 onChange={(e) => {
                   setUploadProgress(true);
@@ -79,7 +83,7 @@ const page = () => {
             </label>
           </h4>
 
-          <h5 className="font-medium text-xs my-2">
+          {/* <h5 className="font-medium text-xs my-2">
             CSV Files (
             {
               uploads.filter((u) => u.fileName.toLowerCase().endsWith(".csv"))
@@ -114,8 +118,8 @@ const page = () => {
                 </Button>
                 <Separator className="my-2" />
               </div>
-            ))}
-
+            ))} */}
+          {/* 
           <h5 className="font-medium text-xs my-2">
             TXT Files (
             {
@@ -123,35 +127,39 @@ const page = () => {
                 .length
             }
             )
-          </h5>
-          {uploads
-            .filter((u) => u.fileName.toLowerCase().endsWith(".txt"))
-            .map(({ fileName, _id }) => (
-              <div key={_id}>
-                <Button
-                  className="text-[0.8rem] w-full flex justify-start"
-                  variant="ghost"
-                  onClick={async () => {
-                    try {
-                      setIscontentLoading(true);
-                      const res = await axios.get(`/api/knowledge/${_id}`);
-                      const file = res.data.file;
-                      setIsCsv(false);
-                      setLoadData(file.content);
-                      setIscontentLoading(false);
-                    } catch (err) {
-                      console.error(err);
-                      alert("Failed to fetch file");
-                      setIscontentLoading(false);
-                    }
-                  }}
-                >
-                  <File className="size-4" />
-                  {fileName}
-                </Button>
-                <Separator className="my-2" />
-              </div>
-            ))}
+          </h5> */}
+          {isFilesLoading ? (
+            <Loader2 className="animate-spin mx-auto" />
+          ) : (
+            uploads
+              .filter((u) => u.fileName.toLowerCase().endsWith(".txt"))
+              .map(({ fileName, _id }) => (
+                <div key={_id}>
+                  <Button
+                    className="text-[0.8rem] w-full flex justify-start"
+                    variant="ghost"
+                    onClick={async () => {
+                      try {
+                        setIscontentLoading(true);
+                        const res = await axios.get(`/api/knowledge/${_id}`);
+                        const file = res.data.file;
+                        setIsCsv(false);
+                        setLoadData(file.content);
+                        setIscontentLoading(false);
+                      } catch (err) {
+                        console.error(err);
+                        alert("Failed to fetch file");
+                        setIscontentLoading(false);
+                      }
+                    }}
+                  >
+                    <File className="size-4" />
+                    {fileName}
+                  </Button>
+                  <Separator className="my-2" />
+                </div>
+              ))
+          )}
         </div>
       </ScrollArea>
 
