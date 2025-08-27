@@ -52,20 +52,21 @@ const data = {
       icon: IconBooks,
     },
     {
-      title: "Analysis",
-      url: "/app/analysis",
-      icon: IconGraph,
-    },
-    {
       title: "Reports",
       url: "/app/reports",
       icon: IconReportAnalytics,
     },
     {
-      title: "Cards",
-      url: "/app/cards",
-      icon: IconGridDots,
+      title: "Analysis",
+      url: "/app/analysis",
+      icon: IconGraph,
     },
+
+    // {
+    //   title: "Cards",
+    //   url: "/app/cards",
+    //   icon: IconGridDots,
+    // },
   ],
 };
 
