@@ -7,15 +7,15 @@ import {
 } from "@/components/ui/shadcn-io/ai/conversation";
 import { Message, MessageContent } from "@/components/ui/shadcn-io/ai/message";
 import axios, { AxiosResponse } from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
-
+import MarkdownPreview from "@uiw/react-markdown-preview";
 import Loader from "@/components/Loader";
-
 const Page = () => {
   const [input, setInput] = useState("");
   const [Messages, setMessages] = useState<messageProps[]>([]);
   const [thinking, setThinking] = useState(false);
+  const [isAgent, setIsAgent] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
@@ -25,6 +25,7 @@ const Page = () => {
     message: string;
     content: string;
     timestamp: string;
+    isAgent: boolean;
   }
 
   interface SearchResponse {
@@ -54,7 +55,7 @@ const Page = () => {
       setThinking(true); // AI started thinking
       const response: AxiosResponse<GenerateResponse> = await axios.post(
         "/api/ai",
-        { prompt, text },
+        { prompt, text, isAgent },
         { headers: { "Content-Type": "application/json" } }
       );
       // Replace "thinking..." placeholder with final AI message
@@ -64,7 +65,7 @@ const Page = () => {
         );
         return [
           ...withoutThinking,
-          { from: "system", message: response.data.content },
+          { from: "system", message: response.data.content, isAgent },
         ];
       });
       return response.data;
@@ -84,11 +85,14 @@ const Page = () => {
     const userMessage = input.trim();
 
     // Add user message
-    setMessages((prev) => [...prev, { from: "user", message: userMessage }]);
+    setMessages((prev) => [
+      ...prev,
+      { from: "user", message: userMessage, isAgent },
+    ]);
     // Add placeholder "AI is thinking..." (now using Loader component)
     setMessages((prev) => [
       ...prev,
-      { from: "system-thinking", message: "" }, // Empty message since we'll render Loader
+      { from: "system-thinking", message: "", isAgent }, // Empty message since we'll render Loader
     ]);
 
     // Clear input after capturing the value
@@ -116,6 +120,8 @@ const Page = () => {
         onSubmit={onSubmit}
         input={input}
         thinking={thinking}
+        isAgent={isAgent}
+        setIsAgent={setIsAgent}
       />
     </div>
   );
@@ -126,12 +132,14 @@ export default Page;
 interface messageProps {
   from: "system" | "user" | "assistant" | "system-thinking";
   message: string;
+  isAgent: boolean;
 }
 
 const Chat = ({ data }: { data: messageProps[] }) => {
+  console.log(data);
   return (
     <>
-      {data.map(({ from, message }, index) => (
+      {data.map(({ from, message, isAgent }, index) => (
         <Message
           from={from === "system-thinking" ? "system" : from}
           key={index}
@@ -143,7 +151,11 @@ const Chat = ({ data }: { data: messageProps[] }) => {
                 : ""
             }`}
           >
-            {from === "system-thinking" ? <Loader /> : message}
+            {from === "system-thinking" ? (
+              <Loader isAgent={isAgent} />
+            ) : (
+              message
+            )}
           </MessageContent>
         </Message>
       ))}

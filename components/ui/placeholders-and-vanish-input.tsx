@@ -1,17 +1,22 @@
 import { Textarea } from "./textarea";
 import { Button } from "./button";
 import { ArrowBigUpDashIcon, Box, PackageOpen } from "lucide-react";
-import { SelectAi } from "../SelectAi";
+import { Toggle } from "./toggle";
+
 const ChatInput = ({
   onSubmit,
   input,
   onChange,
   thinking,
+  isAgent,
+  setIsAgent,
 }: {
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   input: string;
   thinking: boolean;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  isAgent: boolean;
+  setIsAgent: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   return (
     <form
@@ -44,7 +49,16 @@ const ChatInput = ({
         />
       </div>
       <div className="flex space-x-2.5">
-        <SelectAi />
+        <Toggle
+          aria-label="Toggle"
+          defaultPressed={isAgent}
+          onPressedChange={(pressed) => {
+            setIsAgent(pressed);
+          }}
+        >
+          <PackageOpen />
+          Agent
+        </Toggle>
       </div>
       <Button
         type="submit"
