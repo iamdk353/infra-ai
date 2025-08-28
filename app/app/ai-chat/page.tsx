@@ -104,7 +104,7 @@ const Page = () => {
   };
 
   return (
-    <div className="flex flex-col h-[70vh]">
+    <div className="flex flex-col h-[60vh] ">
       <Conversation className="relative w-full">
         <ConversationContent>
           {Messages && <Chat data={Messages} />}

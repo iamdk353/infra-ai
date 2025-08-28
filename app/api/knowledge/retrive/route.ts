@@ -33,7 +33,7 @@ export async function POST(req: Request) {
           path: "embedding",
           queryVector: embedding,
           numCandidates: 50,
-          limit: 3,
+          limit: 5,
           filter: {
             creator: { $eq: getEmailFromToken(token) },
           },

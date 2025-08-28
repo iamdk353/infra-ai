@@ -20,7 +20,9 @@ export async function POST(req: Request) {
       If the input is a question
       Answer only from the retrieved context 
       (${text}).
-      Keep it clear, concise, and factual (2–4 sentences).
+      Keep it clear, concise, and factual (5-6 sentences).
+      try to elobrate on content to fill context space with little info
+      try to find pattrens and connect them 
       If the context lacks the answer, reply with a variation of:
       "I couldn’t find the answer to that in the retrieved documents."
       "The provided context doesn’t include information to address your question."

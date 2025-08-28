@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Box, PackageOpen } from "lucide-react";
+import { PackageOpen } from "lucide-react";
 
 export function SelectAi() {
   return (
@@ -16,9 +16,6 @@ export function SelectAi() {
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectItem value="ask">
-            Ask <Box />
-          </SelectItem>
           <SelectItem value="agent">
             Agent <PackageOpen />
           </SelectItem>
