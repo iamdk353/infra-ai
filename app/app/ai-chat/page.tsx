@@ -4,12 +4,12 @@ import {
   Conversation,
   ConversationContent,
   ConversationScrollButton,
-} from "@/components/ui/shadcn-io/ai/conversation";
+} from "@/components/conversation";
 import { Message, MessageContent } from "@/components/ui/shadcn-io/ai/message";
 import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import React from "react";
-import MarkdownPreview from "@uiw/react-markdown-preview";
+import { Response } from "@/components/response";
 import Loader from "@/components/Loader";
 const Page = () => {
   const [input, setInput] = useState("");
@@ -113,7 +113,7 @@ const Page = () => {
         <ConversationContent>
           {Messages && <Chat data={Messages} />}
         </ConversationContent>
-        {/* <ConversationScrollButton /> */}
+        <ConversationScrollButton />
       </Conversation>
       <ChatInput
         onChange={handleChange}
@@ -154,7 +154,7 @@ const Chat = ({ data }: { data: messageProps[] }) => {
             {from === "system-thinking" ? (
               <Loader isAgent={isAgent} />
             ) : (
-              message
+              <Response>{message}</Response>
             )}
           </MessageContent>
         </Message>
