@@ -25,11 +25,11 @@ import {
 } from "@/components/ui/sidebar";
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
+  // user: {
+  //   name: "shadcn",
+  //   email: "m@example.com",
+  //   avatar: "/avatars/shadcn.jpg",
+  // },
   navMain: [
     {
       title: "Home",
@@ -51,16 +51,16 @@ const data = {
       url: "/app/knowledge",
       icon: IconBooks,
     },
-    {
-      title: "Reports",
-      url: "/app/reports",
-      icon: IconReportAnalytics,
-    },
-    {
-      title: "Analysis",
-      url: "/app/analysis",
-      icon: IconGraph,
-    },
+    // {
+    //   title: "Reports",
+    //   url: "/app/reports",
+    //   icon: IconReportAnalytics,
+    // },
+    // {
+    //   title: "Analysis",
+    //   url: "/app/analysis",
+    //   icon: IconGraph,
+    // },
 
     // {
     //   title: "Cards",
@@ -91,9 +91,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
       </SidebarContent>
-      <SidebarFooter>
+      {/* <SidebarFooter>
         <NavUser user={data.user} />
-      </SidebarFooter>
+      </SidebarFooter> */}
     </Sidebar>
   );
 }
