@@ -83,7 +83,7 @@ const page = () => {
             </label>
           </h4>
 
-          {/* <h5 className="font-medium text-xs my-2">
+          <h5 className="font-medium text-xs my-2">
             CSV Files (
             {
               uploads.filter((u) => u.fileName.toLowerCase().endsWith(".csv"))
@@ -118,8 +118,8 @@ const page = () => {
                 </Button>
                 <Separator className="my-2" />
               </div>
-            ))} */}
-          {/* 
+            ))}
+
           <h5 className="font-medium text-xs my-2">
             TXT Files (
             {
@@ -127,7 +127,7 @@ const page = () => {
                 .length
             }
             )
-          </h5> */}
+          </h5>
           {isFilesLoading ? (
             <Loader2 className="animate-spin mx-auto" />
           ) : (
@@ -179,6 +179,7 @@ const page = () => {
                       fileName,
                       content: loadData,
                       creator: token,
+                      type: iscsv ? "csv" : "txt",
                     }),
                   });
 

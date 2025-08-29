@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   try {
     await connectDB();
 
-    const { token, fileName, content, creator } = await req.json();
+    const { token, fileName, content, creator, type } = await req.json();
     if (!fileName || !content || !creator) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
     }
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
 
     logBackground("INIT", "starting background worker...");
     process.nextTick(() =>
-      processEmbeddings(newFile._id, content, newFile.creator)
+      processEmbeddings(newFile._id, content, newFile.creator, type)
     );
     return NextResponse.json(
       { message: "File saved", file: newFile },
@@ -88,8 +88,13 @@ function logBackground(process: string, message: string) {
 async function processEmbeddings(
   fileId: string,
   text: string,
-  creator: string
+  creator: string,
+  type: string
 ) {
+  if (type == "csv") {
+    logBackground("", "not embedding csv files");
+    return;
+  }
   try {
     logBackground("init", `Starting embedding process for file ${fileId}`);
 
