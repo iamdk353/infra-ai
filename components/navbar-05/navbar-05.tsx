@@ -15,12 +15,6 @@ const Navbar05Page = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <Button
-              size="icon"
-              className="bg-muted text-foreground hover:bg-accent shadow-none rounded-full md:hidden"
-            >
-              <Search className="!h-5 !w-5" />
-            </Button>
             <Link href={"/signup"}>
               <Button
                 variant="outline"

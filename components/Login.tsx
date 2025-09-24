@@ -16,6 +16,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { LucideLoaderCircle } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -24,6 +26,7 @@ const formSchema = z.object({
 
 const Login = () => {
   const router = useRouter();
+  const [load, setLoad] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -35,6 +38,7 @@ const Login = () => {
 
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
+      setLoad(true);
       const res = await fetch("/api/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -44,17 +48,18 @@ const Login = () => {
       const result = await res.json();
 
       if (!res.ok) {
+        setLoad(false);
         toast.error(result.error || "Login failed");
         return;
       }
 
-      // Store token
       localStorage.setItem("token", result.token);
-
       toast.success("Login successful!");
-      router.push("/app"); // redirect to app/dashboard
+      setLoad(false);
+      router.push("/app");
     } catch (err: any) {
       toast.error("Something went wrong");
+      setLoad(false);
     }
   };
 
@@ -106,8 +111,16 @@ const Login = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="mt-4 w-full">
-              Log in
+            <Button
+              type="submit"
+              className="mt-4 w-full flex text-center"
+              disabled={load}
+            >
+              {load ? (
+                <LucideLoaderCircle className="animate-spin" />
+              ) : (
+                "Log in"
+              )}
             </Button>
           </form>
         </Form>

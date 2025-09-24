@@ -217,7 +217,7 @@ const page = () => {
         ) : (
           <pre
             className={cn(
-              "bg-primary-foreground text-wrap p-7 leading-7 text-justify selection:bg-secondary mt-2",
+              " text-wrap p-7 leading-7 text-justify selection:bg-secondary mt-2",
               isContentLoading && "animate-pulse"
             )}
           >
