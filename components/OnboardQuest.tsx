@@ -19,7 +19,20 @@ const questions: OnboardingQuestion[] = [
     id: 1,
     question: "Which domain(s) are you most interested in exploring?",
     type: "msq",
-    options: ["Agriculture", "Healthcare", "Finance", "Education", "Other"],
+    options: [
+      "Agriculture",
+      "Finance",
+      "Healthcare",
+      "Education",
+      "Manufacturing",
+      "Transportation & Logistics",
+      "Retail & E-Commerce",
+      "Energy & Environment",
+      "Government & Public Sector",
+      "Media & Entertainment",
+      "Waste Management",
+      "Personal Life & Lifestyle",
+    ],
   },
   {
     id: 2,
@@ -127,30 +140,44 @@ const OnboardingForm = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setLoad(true);
     e.preventDefault();
-    const result = questions.map((q) => ({
-      question: q.question,
-      answer: answers[q.id],
-    }));
-
-    try {
-      const resp = await axios.post("/api/ai/summarise", {
-        json: result,
-        token: localStorage.getItem("token"),
-      });
-      if (resp.status == 200) {
-        const data = await resp.data;
-        console.log(data);
-        toast.success("Updated Prefrences");
-        router.push("/app");
+    const isValid = questions.every((q) => {
+      if (q.type === "msq") {
+        return Array.isArray(answers[q.id]) && answers[q.id].length > 0;
       }
-    } catch {
-      toast.error("error occured while updatein prefernces");
 
+      return answers[q.id];
+    });
+
+    if (!isValid) {
+      toast.error("answer all questions to  proceed");
+      setLoad(false);
+    } else {
+      setLoad(true);
+
+      const result = questions.map((q) => ({
+        question: q.question,
+        answer: answers[q.id],
+      }));
+
+      try {
+        const resp = await axios.post("/api/ai/summarise", {
+          json: result,
+          token: localStorage.getItem("token"),
+        });
+        if (resp.status == 200) {
+          const data = await resp.data;
+          console.log(data);
+          toast.success("Updated Prefrences");
+          router.push("/app");
+        }
+      } catch {
+        toast.error("error occured while updatein prefernces");
+
+        setLoad(false);
+      }
       setLoad(false);
     }
-    setLoad(false);
   };
 
   return (
