@@ -56,7 +56,7 @@ export const SignUp = () => {
       console.log("Token:", result.token);
       localStorage.setItem("token", result.token);
       setLoad(false);
-      router.push("/app");
+      router.push("/app/onboard");
     } catch (err: any) {
       toast.error("Something went wrong");
       setLoad(false);
