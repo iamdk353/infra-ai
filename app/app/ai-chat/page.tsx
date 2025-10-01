@@ -15,7 +15,7 @@ const Page = () => {
   const [input, setInput] = useState("");
   const [Messages, setMessages] = useState<messageProps[]>([]);
   const [thinking, setThinking] = useState(false);
-  const [isAgent, setIsAgent] = useState(false);
+  const [isAgent, setIsAgent] = useState(true);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
@@ -145,7 +145,7 @@ const Chat = ({ data }: { data: messageProps[] }) => {
           key={index}
         >
           <MessageContent
-            className={`whitespace-pre-wrap break-words ${
+            className={`whitespace-pre-wrap break-words  ${
               from === "system-thinking"
                 ? "flex justify-center items-center"
                 : ""
@@ -154,7 +154,7 @@ const Chat = ({ data }: { data: messageProps[] }) => {
             {from === "system-thinking" ? (
               <Loader isAgent={isAgent} />
             ) : (
-              <Response>{message}</Response>
+              <Response data-type={from}>{message}</Response>
             )}
           </MessageContent>
         </Message>
