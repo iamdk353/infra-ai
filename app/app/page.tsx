@@ -2,6 +2,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import DomainCard from "@/components/ui/DomainCard";
+import { Loader2 } from "lucide-react";
 
 const Domains = {
   Agriculture: [
@@ -353,8 +354,10 @@ function filterDomains(
 
 const Page = () => {
   const [data, setData] = useState([]);
+  const [load, setLoad] = useState(true);
 
   useEffect(() => {
+    setLoad(true);
     const fetchDomain = async () => {
       const token = localStorage.getItem("token");
       if (!token) return;
@@ -363,6 +366,7 @@ const Page = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setData(resp.data.data);
+      setLoad(false);
     };
 
     fetchDomain();
@@ -370,13 +374,22 @@ const Page = () => {
 
   return (
     <div className="@container/main flex flex-1 flex-col gap-2">
-      <div className="grid grid-cols-3 md:gap-6 md:py-6">
-        {filterDomains(data as string[], Domains).map((i, id) => {
-          return (
-            <DomainCard desc={i.desc} link={i.link} title={i.title} key={id} />
-          );
-        })}
-      </div>
+      {load ? (
+        <Loader2 className="animate-spin mx-auto" />
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 md:gap-6 md:py-6">
+          {filterDomains(data as string[], Domains).map((i, id) => {
+            return (
+              <DomainCard
+                desc={i.desc}
+                link={i.link}
+                title={i.title}
+                key={id}
+              />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

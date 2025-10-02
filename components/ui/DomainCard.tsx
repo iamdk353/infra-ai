@@ -20,21 +20,17 @@ const DomainCard = ({
   desc: string;
 }) => {
   return (
-    <Card className="min-h-[15rem]">
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardAction>
-          <Link href={link}>
-            <Badge>
-              <Link2 />
-            </Badge>
-          </Link>
-        </CardAction>
-      </CardHeader>
-      <CardContent>
-        <p>{desc}</p>
-      </CardContent>
-    </Card>
+    <Link href={link}>
+      <Card className="min-h-[15rem]">
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+          <CardAction></CardAction>
+        </CardHeader>
+        <CardContent>
+          <p>{desc}</p>
+        </CardContent>
+      </Card>
+    </Link>
   );
 };
 export default DomainCard;

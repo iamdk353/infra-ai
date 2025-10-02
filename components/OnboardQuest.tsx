@@ -67,6 +67,30 @@ const questions: OnboardingQuestion[] = [
   },
   {
     id: 5,
+    question: "What is your health status?",
+    type: "mcq",
+    options: ["Excellent", "Good", "Average", "Poor", "Prefer not to say"],
+  },
+  {
+    id: 6,
+    question: "What is your annual income range?",
+    type: "mcq",
+    options: [
+      "Below 1 lakh",
+      "1 lakh - 5 lakhs",
+      "5 lakhs - 10 lakhs",
+      "Above 10 lakhs",
+      "Prefer not to say",
+    ],
+  },
+  {
+    id: 7,
+    question: "What type of city do you live in?",
+    type: "mcq",
+    options: ["Metropolitan", "Urban", "Semi-urban", "Rural", "Other"],
+  },
+  {
+    id: 8,
     question: "How do you prefer the AI to respond?",
     type: "msq",
     options: [
@@ -77,7 +101,7 @@ const questions: OnboardingQuestion[] = [
     ],
   },
   {
-    id: 6,
+    id: 9,
     question:
       "Are you looking for real-time solutions or long-term strategies?",
     type: "mcq",
@@ -87,30 +111,50 @@ const questions: OnboardingQuestion[] = [
     ],
   },
   {
-    id: 7,
+    id: 10,
     question:
       "Would you like the AI to suggest new opportunities/ideas beyond your chosen domain?",
     type: "mcq",
     options: ["Yes", "No", "Maybe"],
   },
   {
-    id: 8,
+    id: 11,
     question: "How comfortable are you with technical details?",
     type: "mcq",
     options: ["Basic", "Intermediate", "Advanced"],
   },
   {
-    id: 9,
+    id: 12,
     question:
       "Do you want personalized recommendations based on your usage patterns and goals?",
     type: "mcq",
     options: ["Yes", "No"],
   },
   {
-    id: 10,
+    id: 13,
     question: "How frequently do you plan to use the platform?",
     type: "mcq",
     options: ["Daily", "Weekly", "Occasionally", "Project-based"],
+  },
+  {
+    id: 14,
+    question: "Which common health issues do you face or are concerned about?",
+    type: "msq",
+    options: [
+      "Diabetes",
+      "Hypertension (High Blood Pressure)",
+      "Cardiovascular Diseases (Heart Disease)",
+      "Respiratory Diseases (Asthma, COPD)",
+      "Obesity",
+      "Cancer",
+      "Mental Health Issues (Anxiety, Depression)",
+      "Kidney Disease",
+      "Chronic Pain / Arthritis",
+      "Digestive Disorders",
+      "Vision Problems",
+      "Other",
+      "Prefer not to say",
+    ],
   },
 ];
 
