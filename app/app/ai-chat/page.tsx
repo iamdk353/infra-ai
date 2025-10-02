@@ -119,6 +119,7 @@ const Page = () => {
         onChange={handleChange}
         onSubmit={onSubmit}
         input={input}
+        setInput={setInput}
         thinking={thinking}
         isAgent={isAgent}
         setIsAgent={setIsAgent}
