@@ -14,15 +14,18 @@ const DomainCard = ({
   title,
   link,
   desc,
+  img
 }: {
   title: string;
   link: string;
   desc: string;
+  img:string;
 }) => {
   return (
     <Link href={link}>
-      <Card className="min-h-[15rem]">
+      <Card className="min-h-[25rem]">
         <CardHeader>
+          <img src={img} alt={title} className="w-full h-[15rem] object-cover mb-2 rounded-md"/>
           <CardTitle>{title}</CardTitle>
           <CardAction></CardAction>
         </CardHeader>
