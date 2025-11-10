@@ -5,6 +5,7 @@ import Navbar05Page from "@/components/navbar-05/navbar-05";
 import Footer05Page from "@/components/footer-05/footer-05";
 import { Toaster } from "@/components/ui/sonner";
 import ConditionalLayout from "./conditionalLayout";
+import { ThemeProvider } from "@/components/theme-provider";
 import Script from "next/script";
 
 const geistSans = Geist({
@@ -40,9 +41,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* <div id="google_translate_element"></div> */}
-        <ConditionalLayout>{children}</ConditionalLayout>
-        <Toaster position="top-center" />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {/* <div id="google_translate_element"></div> */}
+          <ConditionalLayout>{children}</ConditionalLayout>
+          <Toaster position="top-center" />
+        </ThemeProvider>
       </body>
     </html>
   );

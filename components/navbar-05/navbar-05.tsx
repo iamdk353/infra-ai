@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "./logo";
 import { Search } from "lucide-react";
 import Link from "next/link";
+import { ModeToggle } from "../ThemeToggle";
 
 const Navbar05Page = () => {
   return (
@@ -14,7 +15,7 @@ const Navbar05Page = () => {
             <div className="relative hidden md:block"></div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 ">
             <Link href={"/signup"}>
               <Button
                 variant="outline"
@@ -23,6 +24,7 @@ const Navbar05Page = () => {
                 Sign Up
               </Button>
             </Link>
+            <ModeToggle />
           </div>
         </div>
       </nav>
