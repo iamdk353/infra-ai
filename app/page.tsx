@@ -1,15 +1,22 @@
-import FAQ02 from "@/components/faq-02/faq-02";
-import Features06Page from "@/components/features-06/features-06";
-import Footer05Page from "@/components/footer-05/footer-05";
-import Hero03 from "@/components/hero-03/hero-03";
-import Navbar05Page from "@/components/navbar-05/navbar-05";
+import Features from "@/components/features";
+import Footer from "@/components/footer";
+import Hero from "@/components/hero";
+import HowItWorks from "@/components/how-it-works";
+import Marquee from "@/components/marquee";
+import Testimonials from "@/components/testimonial";
+import Image from "next/image";
 
 const page = () => {
   return (
-    <div className="flex flex-col">
-      <Hero03 />
-      <Features06Page />
-      <FAQ02 />
+    <div className="min-h-screen pt-20">
+      <div className="w-full h-[80vh]">
+        <Hero />
+        <Marquee />
+        <HowItWorks />
+        <Features />
+        <Testimonials />
+        <Footer />
+      </div>
     </div>
   );
 };
