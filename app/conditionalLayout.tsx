@@ -6,6 +6,7 @@ import Footer05Page from "@/components/footer-05/footer-05";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import { useEffect } from "react";
+import Footer from "@/components/footer";
 
 export default function ConditionalLayout({
   children,
@@ -31,7 +32,6 @@ export default function ConditionalLayout({
     <>
       <Navbar05Page />
       {children}
-      <Footer05Page />
     </>
   );
 }
