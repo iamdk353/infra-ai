@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import { connectDB } from "@/lib/mongodb"; // your MongoDB connection
-import { User } from "@/models/User"; // your User model
+import { connectDB } from "@/lib/mongodb";
+import { User } from "@/models/User";
 
 export async function GET(req: Request) {
   try {

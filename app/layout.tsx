@@ -29,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <Script src="/assets/lang-config.js" strategy="beforeInteractive" />
         <Script src="/assets/translation.js" strategy="beforeInteractive" />
@@ -47,7 +47,6 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {/* <div id="google_translate_element"></div> */}
           <ConditionalLayout>{children}</ConditionalLayout>
           <Toaster position="top-center" />
         </ThemeProvider>

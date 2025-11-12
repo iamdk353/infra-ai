@@ -10,8 +10,7 @@ if (!JWT_SECRET) throw new Error("Please add JWT_SECRET to .env");
 
 export async function POST(req: Request) {
   try {
-    const { email, password, action } = await req.json(); // action = "signup" | "login"
-
+    const { email, password, action, name } = await req.json(); // action = "signup" | "login"
     await connectDB();
 
     if (action === "signup") {
@@ -25,11 +24,9 @@ export async function POST(req: Request) {
       }
 
       const hashed = await bcrypt.hash(password, 10);
-      const user = await User.create({ email, password: hashed });
+      const user = await User.create({ email, password: hashed, name });
 
-      const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
-        expiresIn: "1d",
-      });
+      const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET);
 
       return NextResponse.json({ message: "Signup success", token });
     }

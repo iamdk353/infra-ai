@@ -20,6 +20,7 @@ import { LucideLoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters long"),
   email: z.string().email(),
   password: z.string().min(8, "Password must be at least 8 characters long"),
 });
@@ -29,6 +30,7 @@ export const SignUp = () => {
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
+      name: "",
       email: "",
       password: "",
     },
@@ -75,6 +77,24 @@ export const SignUp = () => {
             className="w-full space-y-4"
             onSubmit={form.handleSubmit(onSubmit)}
           >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Name"
+                      className="w-full"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="email"
