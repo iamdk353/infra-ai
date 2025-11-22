@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 import ConditionalLayout from "./conditionalLayout";
 import { ThemeProvider } from "@/components/theme-provider";
 import Script from "next/script";
+import BeamsInit from "@/components/beams-init";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <Script
+          src="https://js.pusher.com/beams/2.1.0/push-notifications-cdn.js"
+          strategy="afterInteractive"
+        />
         <Script src="/assets/lang-config.js" strategy="beforeInteractive" />
         <Script src="/assets/translation.js" strategy="beforeInteractive" />
         <Script
@@ -41,6 +46,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <BeamsInit />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
