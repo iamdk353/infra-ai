@@ -9,7 +9,7 @@ const beamsClient = new PushNotifications({
 export async function POST() {
   try {
     await beamsClient.publishToInterests(
-      ["hello"],
+      ["debug-hello"],
       notifications[Math.floor(Math.random() * notifications.length)]
     );
 
